@@ -1,5 +1,5 @@
 import { hc } from 'hono/client'
-import { App } from "../src/index";
+import type { App } from "../src/index";
 
 async function populateDb() {
   const apiClient = hc<App>("http://localhost:3000", {

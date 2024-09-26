@@ -13,7 +13,11 @@
     "db:generate": "pnpm drizzle-kit generate",
     "db:migrate": "pnpm drizzle-kit migrate",
     "db:studio": "pnpm drizzle-kit studio",
-    "db:populate": "bun run scripts/populateDb.ts"
+    "db:populate": "bun run scripts/populateDb.ts",
+    "flagd:start": "flagd start --uri http://localhost:3000/flagd.json",
+    "flagd:evaluate:boolean": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"show-welcome-banner\",\"context\":{}}' -H \"Content-Type: application/json\"",
+    "flagd:evaluate:string": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveString\" -d '{\"flagKey\":\"background-color\",\"context\":{}}' -H \"Content-Type: application/json\"",
+    "start:all": "bun run start & sleep 5 && bun run flagd:start"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.11.3",
@@ -23,7 +27,9 @@
     "drizzle-orm": "^0.32.2",
     "drizzle-zod": "^0.5.1",
     "hono": "4.5.3",
+    "hono-pino-logger": "^1.0.0",
     "nanoid": "^5.0.7",
+    "pino": "^9.4.0",
     "postgres": "^3.4.4",
     "znv": "0.4.0",
     "zod": "^3.23.8"

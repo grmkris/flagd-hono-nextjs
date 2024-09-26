@@ -6,7 +6,7 @@ import {
 	text,
 	uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createSelectSchema } from "drizzle-zod";
 import { FeatureId, FeatureStateId, generateId } from "./id";
 import { relations } from "drizzle-orm";
 import type { db } from "./db";
@@ -99,6 +99,16 @@ export async function generateFlagdConfig(db: db) {
 					off: boolean;
 				};
 				defaultVariant: "on" | "off";
+				targeting?: {
+					rules: Array<{
+						conditions?: Array<{
+							operator: string;
+							key: string;
+							values: string[];
+						}>;
+						variant: "on" | "off";
+					}>;
+				};
 			}
 		>;
 		$schema: "https://flagd.dev/schema/v0/flags.json";
@@ -108,35 +118,52 @@ export async function generateFlagdConfig(db: db) {
 	};
 
 	for (const feature of featuresList) {
-		const state = getFeatureState(feature.key, featureStatesList);
+		const featureStates = featureStatesList.filter(
+			(state) => state.feature.key === feature.key
+		);
+
 		config.flags[feature.key] = {
-			state: state ? "ENABLED" : "DISABLED",
+			state: "ENABLED",
 			variants: {
 				on: true,
 				off: false,
 			},
-			defaultVariant: state ? "on" : "off",
+			defaultVariant: "off",
 		};
+
+		if (featureStates.length > 0) {
+			config.flags[feature.key].targeting = {
+				rules: [],
+			};
+
+			for (const state of featureStates) {
+				let rule: any = {
+					variant: state.state ? "on" : "off",
+				};
+
+				if (state.contextType === "global") {
+					// No conditions needed for global context
+				} else if (state.contextType === "organization") {
+					rule.condition = {
+						"==": [{ var: "organizationId" }, state.contextId],
+					};
+				} else if (state.contextType === "workspace") {
+					rule.condition = {
+						"==": [{ var: "workspaceId" }, state.contextId],
+					};
+				}
+
+				config.flags[feature.key].targeting!.rules.push(rule);
+			}
+
+			// If no rules were added, remove the targeting property
+			if (config.flags[feature.key].targeting!.rules.length === 0) {
+				delete config.flags[feature.key].targeting;
+			}
+		}
 	}
 
 	return config;
 }
 
 export type SelectFeatureState = z.infer<typeof SelectFeatureState>;
-function getFeatureState(
-	featureKey: string,
-	featureStatesList: SelectFeatureState[],
-) {
-	for (const state of featureStatesList) {
-		if (state.feature.key === featureKey) {
-			if (state.contextType === "workspace") {
-				return state.state;
-			} else if (state.contextType === "organization") {
-				return state.state;
-			} else if (state.contextType === "global") {
-				return state.state;
-			}
-		}
-	}
-	return false; // Default to disabled if no state is found
-}
