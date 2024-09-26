@@ -6,6 +6,11 @@
 		"start": "bun run src/index.ts"
 	},
 	"dependencies": {
+		"@grpc/grpc-js": "^1.11.3",
+		"@openfeature/core": "^1.4.0",
+		"@openfeature/flagd-core": "^0.2.5",
+		"@openfeature/flagd-provider": "^0.13.1",
+		"@openfeature/server-sdk": "^1.15.1",
 		"hono": "^4.6.3"
 	},
 	"devDependencies": {

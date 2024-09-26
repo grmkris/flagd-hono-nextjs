@@ -95,12 +95,14 @@ export async function generateFlagdConfig(db: db) {
 			{
 				state: "ENABLED" | "DISABLED";
 				variants: {
-					"true": boolean;
-					"false": boolean;
+					true: boolean;
+					false: boolean;
 				};
 				defaultVariant: "true" | "false";
 				targeting?: {
-					if: any[];
+					if: Array<
+						string | boolean | { "==": (string | { var: string } | null)[] }
+					>;
 				};
 			}
 		>;
@@ -112,35 +114,43 @@ export async function generateFlagdConfig(db: db) {
 
 	for (const feature of featuresList) {
 		const featureStates = featureStatesList.filter(
-			(state) => state.feature.key === feature.key
+			(state) => state.feature.key === feature.key,
 		);
 
 		config.flags[feature.key] = {
 			state: "ENABLED",
 			variants: {
-				"true": true,
-				"false": false,
+				true: true,
+				false: false,
 			},
 			defaultVariant: "false",
 		};
 
 		if (featureStates.length > 0) {
-			const targetingRules = featureStates.flatMap(state => {
-				if (state.contextType === "global") {
-					return [true, state.state ? "true" : "false"];
-				} else if (state.contextType === "organization") {
-					return [
-						{ "==": [{ var: "organizationId" }, state.contextId] },
-						state.state ? "true" : "false"
-					];
-				} else if (state.contextType === "workspace") {
-					return [
-						{ "==": [{ var: "workspaceId" }, state.contextId] },
-						state.state ? "true" : "false"
-					];
-				}
-				return [];
-			});
+			const targetingRules = featureStates.flatMap(
+				(
+					state,
+				): Array<
+					string | boolean | { "==": (string | { var: string } | null)[] }
+				> => {
+					if (state.contextType === "global") {
+						return [true, state.state ? "true" : "false"];
+					}
+					if (state.contextType === "organization") {
+						return [
+							{ "==": [{ var: "organizationId" }, state.contextId] },
+							state.state ? "true" : "false",
+						];
+					}
+					if (state.contextType === "workspace") {
+						return [
+							{ "==": [{ var: "workspaceId" }, state.contextId] },
+							state.state ? "true" : "false",
+						];
+					}
+					return [];
+				},
+			);
 
 			if (targetingRules.length > 0) {
 				targetingRules.push("false"); // Add default "false" at the end

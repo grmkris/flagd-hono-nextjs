@@ -1,18 +1,23 @@
 {
-	"name": "flagd-open-feature-ts",
-	"version": "1.0.0",
-	"description": "",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"format": "biome format --write",
-		"lint": "biome lint --fix",
-		"check": "pnpm run lint && pnpm run format"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"@biomejs/biome": "1.9.2",
-		"pino-pretty": "^11.2.2"
-	}
+  "name": "flagd-open-feature-ts",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "biome format --write",
+    "lint": "biome lint --fix",
+    "check": "bun run lint && bun run format"
+  },
+  "workspaces": [
+    "apps/flag-service",
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.2",
+    "pino-pretty": "^11.2.2"
+  }
 }
