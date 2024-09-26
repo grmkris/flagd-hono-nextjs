@@ -95,19 +95,12 @@ export async function generateFlagdConfig(db: db) {
 			{
 				state: "ENABLED" | "DISABLED";
 				variants: {
-					on: boolean;
-					off: boolean;
+					"on": boolean;
+					"off": boolean;
 				};
 				defaultVariant: "on" | "off";
 				targeting?: {
-					rules: Array<{
-						conditions?: Array<{
-							operator: string;
-							key: string;
-							values: string[];
-						}>;
-						variant: "on" | "off";
-					}>;
+					if: Array<any>;
 				};
 			}
 		>;
@@ -125,40 +118,27 @@ export async function generateFlagdConfig(db: db) {
 		config.flags[feature.key] = {
 			state: "ENABLED",
 			variants: {
-				on: true,
-				off: false,
+				"on": true,
+				"off": false,
 			},
 			defaultVariant: "off",
 		};
 
 		if (featureStates.length > 0) {
-			config.flags[feature.key].targeting = {
-				rules: [],
-			};
-
-			for (const state of featureStates) {
-				let rule: any = {
-					variant: state.state ? "on" : "off",
-				};
-
+			const targetingRules = featureStates.map(state => {
 				if (state.contextType === "global") {
-					// No conditions needed for global context
+					return [true, state.state ? "on" : "off"];
 				} else if (state.contextType === "organization") {
-					rule.condition = {
-						"==": [{ var: "organizationId" }, state.contextId],
-					};
+					return [{ "==": [{ var: "organizationId" }, state.contextId] }, state.state ? "on" : "off"];
 				} else if (state.contextType === "workspace") {
-					rule.condition = {
-						"==": [{ var: "workspaceId" }, state.contextId],
-					};
+					return [{ "==": [{ var: "workspaceId" }, state.contextId] }, state.state ? "on" : "off"];
 				}
+			}).filter(Boolean);
 
-				config.flags[feature.key].targeting!.rules.push(rule);
-			}
-
-			// If no rules were added, remove the targeting property
-			if (config.flags[feature.key].targeting!.rules.length === 0) {
-				delete config.flags[feature.key].targeting;
+			if (targetingRules.length > 0) {
+				config.flags[feature.key].targeting = {
+					if: targetingRules
+				};
 			}
 		}
 	}
