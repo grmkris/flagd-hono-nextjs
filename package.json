@@ -12,6 +12,7 @@
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@biomejs/biome": "1.9.2"
+		"@biomejs/biome": "1.9.2",
+		"pino-pretty": "^11.2.2"
 	}
 }

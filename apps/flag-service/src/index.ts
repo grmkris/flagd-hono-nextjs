@@ -154,6 +154,44 @@ export const createFlagService = async () => {
 			} catch (error) {
 				return c.json({ error: "Failed to generate flagd config" }, 500);
 			}
+		})
+		.get("/flagd1.json", async (c) => {
+			return c.json({
+				"$schema": "https://flagd.dev/schema/v0/flags.json",
+				"flags": {
+					"show-welcome-banner": {
+						"state": "ENABLED",
+						"variants": {
+							"on": true,
+							"off": false
+						},
+						"defaultVariant": "off"
+					},
+					"background-color": {
+						"state": "ENABLED",
+						"variants": {
+							"red": "#FF0000",
+							"blue": "#0000FF",
+							"green": "#00FF00",
+							"yellow": "#FFFF00"
+						},
+						"defaultVariant": "red",
+						"targeting": {
+							"if": [
+								{
+									"===": [
+										{
+											"var": "company"
+										},
+										"initech"
+									]
+								},
+								"green"
+							]
+						}
+					}
+				}
+			}, 200);
 		});
 	return app;
 }

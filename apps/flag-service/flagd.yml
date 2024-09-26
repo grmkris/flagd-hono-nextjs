@@ -9,3 +9,15 @@ services:
       - FLAGD_PROVIDER_SYNC_INTERVAL=30s
       - FLAGD_PROVIDER_REQUEST_TIMEOUT=30s
     command: start --uri http://YOUR_HOST_IP:3000/flagd
+
+flags:
+  feature1:
+    state: ENABLED
+    variants:
+      "true": true
+      "false": false
+    defaultVariant: "false"
+    targeting:
+      if:
+        - [{"==": [{"var": "workspaceId"}, "workspace1"]}, "true"]
+      else: "false"

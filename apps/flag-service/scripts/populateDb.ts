@@ -6,47 +6,51 @@ async function populateDb() {
     headers: {
       "Content-Type": "application/json",
     },
-  }); // Adjust the URL to your running service
+  });
 
-  // Create some test data using API endpoints
-  const result = await apiClient.features.$post({
-    json: { key: "feature1", name: "Feature 1", description: "Test feature 1" },
-  });
-  if (result.status !== 201) {
-    console.error("Failed to create feature:", (await result.json()).error);
-    process.exit(1);
-  }
-  const result1 = await apiClient.features.$post({
-    json: { key: "feature2", name: "Feature 2", description: "Test feature 2" },
-  });
-  if (result1.status !== 201) {
-    console.error("Failed to create feature:", (await result1.json()).error);
-    process.exit(1);
+  // Create features
+  const features = [
+    { key: "feature1", name: "Feature 1", description: "Test feature 1" },
+    { key: "feature2", name: "Feature 2", description: "Test feature 2" },
+    { key: "feature3", name: "Feature 3", description: "Test feature 3" },
+  ];
+
+  for (const feature of features) {
+    const result = await apiClient.features.$post({ json: feature });
+    if (result.status !== 201) {
+      console.warn(`Failed to create feature ${feature.key}:`, (await result.json()).error);
+      continue;
+    }
+    console.log(`Created feature: ${feature.key}`);
   }
 
-  const result2 = await apiClient["feature-states"].$post({
-    json: {
-      featureKey: "feature1",
-      contextType: "workspace",
-      contextId: "workspace1",
-      state: true,
-    },
-  });
-  if (result2.status !== 201) {
-    console.error("Failed to create feature state:", (await result2.json()).error);
-    process.exit(1);
-  }
-  const result3 = await apiClient["feature-states"].$post({
-    json: {
-      featureKey: "feature2",
-      contextType: "workspace",
-      contextId: "workspace2",
-      state: false,
-    },
-  });
-  if (result3.status !== 201) {
-    console.error("Failed to create feature state:", (await result3.json()).error);
-    process.exit(1);
+  // Define static feature states
+  const featureStates = [
+    // feature1: enabled for org1, disabled for org2
+    { featureKey: "feature1", contextType: "organization", contextId: "org1", state: true },
+    { featureKey: "feature1", contextType: "organization", contextId: "org2", state: true },
+    // feature1: 3 workspaces in org1, mixed states
+    { featureKey: "feature1", contextType: "workspace", contextId: "workspace1", state: true },
+    { featureKey: "feature1", contextType: "workspace", contextId: "workspace2", state: true },
+    { featureKey: "feature1", contextType: "workspace", contextId: "workspace3", state: true },
+    // feature2: enabled for org1, disabled for some workspaces
+    { featureKey: "feature2", contextType: "organization", contextId: "org1", state: true },
+    { featureKey: "feature2", contextType: "workspace", contextId: "workspace1", state: true },
+    { featureKey: "feature2", contextType: "workspace", contextId: "workspace2", state: true },
+    // feature3: mixed states
+    { featureKey: "feature3", contextType: "organization", contextId: "org1", state: true },
+    { featureKey: "feature3", contextType: "organization", contextId: "org2", state: true },
+    { featureKey: "feature3", contextType: "workspace", contextId: "workspace1", state: true },
+    { featureKey: "feature3", contextType: "workspace", contextId: "workspace2", state: true },
+  ];
+
+  for (const state of featureStates) {
+    const result = await apiClient["feature-states"].$post({ json: state });
+    if (result.status !== 201) {
+      console.warn(`Failed to create feature state for ${state.featureKey} in ${state.contextType} ${state.contextId}:`, (await result.json()).error);
+      continue;
+    }
+    console.log(`Created feature state: ${state.featureKey} for ${state.contextType} ${state.contextId} = ${state.state}`);
   }
 
   console.log("Database populated successfully");

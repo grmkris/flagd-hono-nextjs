@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
+    "dev": "bun run --hot src/index.ts | pino-pretty",
     "test": "bun test test/flag-service.test.ts",
     "start": "bun run src/index.ts",
     "db:start": "docker compose -f postgres.yml up -d",
@@ -14,9 +14,12 @@
     "db:migrate": "pnpm drizzle-kit migrate",
     "db:studio": "pnpm drizzle-kit studio",
     "db:populate": "bun run scripts/populateDb.ts",
-    "flagd:start": "flagd start --uri http://localhost:3000/flagd.json",
-    "flagd:evaluate:boolean": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"show-welcome-banner\",\"context\":{}}' -H \"Content-Type: application/json\"",
-    "flagd:evaluate:string": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveString\" -d '{\"flagKey\":\"background-color\",\"context\":{}}' -H \"Content-Type: application/json\"",
+    "flagd:start": "flagd start --uri http://localhost:3000/flagd.json --debug ",
+    "flagd:evaluate:boolean": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"feature1\",\"context\":{\"workspaceId\":\"workspace1\"}}' -H \"Content-Type: application/json\"",
+    "flagd:evaluate:boolean:feature1": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"feature1\",\"context\":{\"workspaceId\":\"workspace1\"}}' -H \"Content-Type: application/json\"",
+    "flagd:evaluate:boolean:feature2": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"feature2\",\"context\":{\"workspaceId\":\"workspace2\"}}' -H \"Content-Type: application/json\"",
+    "flagd:evaluate:boolean:unrelated": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"show-welcome-banner\",\"context\":{}}' -H \"Content-Type: application/json\"",
+    "flagd:evaluate:boolean:feature1:otherworkspace": "curl -X POST \"http://localhost:8013/flagd.evaluation.v1.Service/ResolveBoolean\" -d '{\"flagKey\":\"feature1\",\"context\":{\"workspaceId\":\"otherworkspace\"}}' -H \"Content-Type: application/json\"",
     "start:all": "bun run start & sleep 5 && bun run flagd:start"
   },
   "dependencies": {

@@ -95,12 +95,12 @@ export async function generateFlagdConfig(db: db) {
 			{
 				state: "ENABLED" | "DISABLED";
 				variants: {
-					"on": boolean;
-					"off": boolean;
+					"true": boolean;
+					"false": boolean;
 				};
-				defaultVariant: "on" | "off";
+				defaultVariant: "true" | "false";
 				targeting?: {
-					if: Array<any>;
+					if: any[];
 				};
 			}
 		>;
@@ -118,26 +118,34 @@ export async function generateFlagdConfig(db: db) {
 		config.flags[feature.key] = {
 			state: "ENABLED",
 			variants: {
-				"on": true,
-				"off": false,
+				"true": true,
+				"false": false,
 			},
-			defaultVariant: "off",
+			defaultVariant: "false",
 		};
 
 		if (featureStates.length > 0) {
-			const targetingRules = featureStates.map(state => {
+			const targetingRules = featureStates.flatMap(state => {
 				if (state.contextType === "global") {
-					return [true, state.state ? "on" : "off"];
+					return [true, state.state ? "true" : "false"];
 				} else if (state.contextType === "organization") {
-					return [{ "==": [{ var: "organizationId" }, state.contextId] }, state.state ? "on" : "off"];
+					return [
+						{ "==": [{ var: "organizationId" }, state.contextId] },
+						state.state ? "true" : "false"
+					];
 				} else if (state.contextType === "workspace") {
-					return [{ "==": [{ var: "workspaceId" }, state.contextId] }, state.state ? "on" : "off"];
+					return [
+						{ "==": [{ var: "workspaceId" }, state.contextId] },
+						state.state ? "true" : "false"
+					];
 				}
-			}).filter(Boolean);
+				return [];
+			});
 
 			if (targetingRules.length > 0) {
+				targetingRules.push("false"); // Add default "false" at the end
 				config.flags[feature.key].targeting = {
-					if: targetingRules
+					if: targetingRules,
 				};
 			}
 		}
