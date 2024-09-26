@@ -1,0 +1,36 @@
+{
+  "name": "flag-service",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "test": "bun test test/flag-service.test.ts",
+    "start": "bun run src/index.ts",
+    "db:start": "docker compose -f postgres.yml up -d",
+    "db:stop": "docker compose -f postgres.yml down",
+    "db:clean": "docker compose -f postgres.yml down -v",
+    "db:generate": "pnpm drizzle-kit generate",
+    "db:migrate": "pnpm drizzle-kit migrate",
+    "db:studio": "pnpm drizzle-kit studio",
+    "db:populate": "bun run scripts/populateDb.ts"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.11.3",
+    "@grpc/proto-loader": "^0.7.13",
+    "@hono/zod-openapi": "^0.15.3",
+    "bun": "1.1.29",
+    "drizzle-orm": "^0.32.2",
+    "drizzle-zod": "^0.5.1",
+    "hono": "4.5.3",
+    "nanoid": "^5.0.7",
+    "postgres": "^3.4.4",
+    "znv": "0.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.7",
+    "drizzle-kit": "^0.23.2",
+    "typescript": "^5.5.4"
+  }
+}
