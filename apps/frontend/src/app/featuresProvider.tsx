@@ -17,6 +17,7 @@ export default function FeaturesProvider({
     host: "localhost",
     port: 8013,
     tls: false,
+
   })
   OpenFeature.setProviderAndWait(flagd);
   OpenFeature.setContext({
