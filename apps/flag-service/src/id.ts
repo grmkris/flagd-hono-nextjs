@@ -1,24 +1,24 @@
-import { customAlphabet } from "nanoid";
-import { z } from "zod";
+import { customAlphabet } from 'nanoid';
+import { z } from 'zod';
 
 const prefixes = {
-	feature: "ftr",
-	featureState: "fst",
+  feature: 'ftr',
+  featureState: 'fst',
 } as const;
 
 type Prefix = (typeof prefixes)[keyof typeof prefixes];
 export type Entity = keyof typeof prefixes;
 
 type PrefixToId = {
-	[K in keyof typeof prefixes]: `${(typeof prefixes)[K]}${string}`;
+  [K in keyof typeof prefixes]: `${(typeof prefixes)[K]}${string}`;
 };
 
 // Zod schemas
 const createIdSchema = <T extends Prefix>(prefix: T) =>
-	z.custom<`${T}${string}`>(
-		(val): val is `${T}${string}` =>
-			typeof val === "string" && val.startsWith(prefix),
-	);
+  z.custom<`${T}${string}`>(
+    (val): val is `${T}${string}` =>
+      typeof val === 'string' && val.startsWith(prefix),
+  );
 
 export const FeatureId = createIdSchema(prefixes.feature);
 export const FeatureStateId = createIdSchema(prefixes.featureState);
@@ -27,18 +27,18 @@ export type FeatureId = z.infer<typeof FeatureId>;
 export type FeatureStateId = z.infer<typeof FeatureStateId>;
 
 interface GenerateIdOptions {
-	/**
-	 * The length of the generated ID.
-	 * @default 12
-	 * @example 12 => "abc123def456"
-	 * */
-	length?: number;
-	/**
-	 * The separator to use between the prefix and the generated ID.
-	 * @default "_"
-	 * @example "_" => "str_abc123"
-	 * */
-	separator?: string;
+  /**
+   * The length of the generated ID.
+   * @default 12
+   * @example 12 => "abc123def456"
+   * */
+  length?: number;
+  /**
+   * The separator to use between the prefix and the generated ID.
+   * @default "_"
+   * @example "_" => "str_abc123"
+   * */
+  separator?: string;
 }
 
 /**
@@ -51,12 +51,12 @@ interface GenerateIdOptions {
  * generateId("customer", { separator: "-" }) => "cst-abc123def456"
  */
 export function generateId<T extends keyof typeof prefixes>(
-	prefix: T,
-	{ length = 12, separator = "_" }: GenerateIdOptions = {},
+  prefix: T,
+  { length = 12, separator = '_' }: GenerateIdOptions = {},
 ): PrefixToId[T] {
-	const id = customAlphabet(
-		"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-		length,
-	)();
-	return `${prefixes[prefix]}${separator}${id}` as PrefixToId[T];
+  const id = customAlphabet(
+    '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+    length,
+  )();
+  return `${prefixes[prefix]}${separator}${id}` as PrefixToId[T];
 }

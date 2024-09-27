@@ -8,11 +8,7 @@
     "lint": "biome lint --fix",
     "check": "bun run lint && bun run format"
   },
-  "workspaces": [
-    "apps/flag-service",
-    "apps/backend",
-    "apps/frontend"
-  ],
+  "workspaces": ["apps/flag-service", "apps/backend", "apps/frontend"],
   "keywords": [],
   "author": "",
   "license": "ISC",

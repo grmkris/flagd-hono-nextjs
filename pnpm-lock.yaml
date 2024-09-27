@@ -17,15 +17,6 @@ importers:
 
   apps/backend:
     dependencies:
-      '@grpc/grpc-js':
-        specifier: ^1.11.3
-        version: 1.11.3
-      '@openfeature/core':
-        specifier: ^1.4.0
-        version: 1.4.0
-      '@openfeature/flagd-core':
-        specifier: ^0.2.5
-        version: 0.2.5(@openfeature/core@1.4.0)
       '@openfeature/flagd-provider':
         specifier: ^0.13.1
         version: 0.13.1(@grpc/grpc-js@1.11.3)(@openfeature/core@1.4.0)(@openfeature/server-sdk@1.15.1(@openfeature/core@1.4.0))
@@ -97,6 +88,9 @@ importers:
 
   apps/frontend:
     dependencies:
+      '@openfeature/flagd-web-provider':
+        specifier: ^0.7.2
+        version: 0.7.2(@openfeature/web-sdk@1.2.4(@openfeature/core@1.4.0))
       '@openfeature/react-sdk':
         specifier: ^0.4.6
         version: 0.4.6(@openfeature/web-sdk@1.2.4(@openfeature/core@1.4.0))(react@18.3.1)
@@ -104,29 +98,29 @@ importers:
         specifier: 14.2.13
         version: 14.2.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
-        specifier: ^18
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@types/node':
-        specifier: ^20
+        specifier: ^20.16.9
         version: 20.16.9
       '@types/react':
-        specifier: ^18
+        specifier: ^18.3.9
         version: 18.3.9
       '@types/react-dom':
-        specifier: ^18
+        specifier: ^18.3.0
         version: 18.3.0
       postcss:
-        specifier: ^8
+        specifier: ^8.4.47
         version: 8.4.47
       tailwindcss:
-        specifier: ^3.4.1
+        specifier: ^3.4.13
         version: 3.4.13
       typescript:
-        specifier: ^5
+        specifier: ^5.6.2
         version: 5.6.2
 
 packages:
@@ -192,6 +186,20 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@bufbuild/protobuf@1.10.0':
+    resolution: {integrity: sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag==}
+
+  '@connectrpc/connect-web@1.4.0':
+    resolution: {integrity: sha512-13aO4psFbbm7rdOFGV0De2Za64DY/acMspgloDlcOKzLPPs0yZkhp1OOzAQeiAIr7BM/VOHIA3p8mF0inxCYTA==}
+    peerDependencies:
+      '@bufbuild/protobuf': ^1.4.2
+      '@connectrpc/connect': 1.4.0
+
+  '@connectrpc/connect@1.4.0':
+    resolution: {integrity: sha512-vZeOkKaAjyV4+RH3+rJZIfDFJAfr+7fyYr6sLDKbYX3uuTVszhFe9/YKf5DNqrDb5cKdKVlYkGn6DTDqMitAnA==}
+    peerDependencies:
+      '@bufbuild/protobuf': ^1.4.2
 
   '@drizzle-team/brocli@0.8.2':
     resolution: {integrity: sha512-zTrFENsqGvOkBOuHDC1pXCkDXNd2UhP4lI3gYGhQ1R1SPeAAfqzPsV1dcpMy4uNU6kB5VpU5NGhvwxVNETR02A==}
@@ -596,16 +604,16 @@ packages:
     peerDependencies:
       '@openfeature/core': '>=0.0.16'
 
-  '@openfeature/flagd-core@0.2.5':
-    resolution: {integrity: sha512-9A0LxP3G/JzqZK17pli6jbD7XnRTDtYZRU3TOBVeb4SBxeHuwSlXX6AjAoXMk/6yKvAF+Q6LHpDwXp8teGMsAA==}
-    peerDependencies:
-      '@openfeature/core': '>=0.0.16'
-
   '@openfeature/flagd-provider@0.13.1':
     resolution: {integrity: sha512-X+sNmgmHN08U1kE0I1lLNDdvvvUTmPpXxFuppB8ak+6+d5lHCLMIhhEGlE56C8VhyWBP0d+chl42O4IqdypqDA==}
     peerDependencies:
       '@grpc/grpc-js': ~1.8.0 || ~1.9.0 || ~1.10.0
       '@openfeature/server-sdk': ^1.13.0
+
+  '@openfeature/flagd-web-provider@0.7.2':
+    resolution: {integrity: sha512-emjsoO3RJLJ/v1zyLTW/wOIem3dck8Ccboa2tzZedFcue6qo+Vwz1ANOdevbK8AcKDyiZmySi2ms2Mrw7uE7GQ==}
+    peerDependencies:
+      '@openfeature/web-sdk': ^1.0.0
 
   '@openfeature/react-sdk@0.4.6':
     resolution: {integrity: sha512-XYE3bVvx+Ivw/YgeZkEsB2riz1auZAizsZ0kdRSOQTdnX+Tc98U+qW3cqL07YFsbxKX/7ayISt1ctDdGzRAtRA==}
@@ -718,6 +726,9 @@ packages:
 
   '@types/node@20.16.9':
     resolution: {integrity: sha512-rkvIVJxsOfBejxK7I0FO5sa2WxFmJCzoDwcd88+fq/CUfynNywTo/1/T6hyFz22CyztsnLS9nVlHOnTI36RH5w==}
+
+  '@types/node@22.7.3':
+    resolution: {integrity: sha512-qXKfhXXqGTyBskvWEzJZPUxSslAiLaB6JGP1ic/XTH9ctGgzdgYguuLP1C601aRTSDNlLb0jbKqXjZ48GNraSA==}
 
   '@types/prop-types@15.7.13':
     resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
@@ -1209,10 +1220,6 @@ packages:
 
   json-logic-engine@1.3.4:
     resolution: {integrity: sha512-p+WXFVTDWjZiM45+H2MSnAz984PPt2QampUGeMmgxWllsJjF8j8ucA3llmbL0xJkkV/7uj4MhhgJIYZ1MbkGiA==}
-    engines: {node: '>=12.22.7'}
-
-  json-logic-engine@1.3.6:
-    resolution: {integrity: sha512-ZC3Le6W0vsGKPvoJYu5Xpca2A+0N0IsPwZEfJsJzdCwbuuZkFMsIhNNp4Y6Txh2+P+OquADhgnI450KMStybqA==}
     engines: {node: '>=12.22.7'}
 
   json-schema-traverse@1.0.0:
@@ -1738,6 +1745,17 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.2':
     optional: true
 
+  '@bufbuild/protobuf@1.10.0': {}
+
+  '@connectrpc/connect-web@1.4.0(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0))':
+    dependencies:
+      '@bufbuild/protobuf': 1.10.0
+      '@connectrpc/connect': 1.4.0(@bufbuild/protobuf@1.10.0)
+
+  '@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0)':
+    dependencies:
+      '@bufbuild/protobuf': 1.10.0
+
   '@drizzle-team/brocli@0.8.2': {}
 
   '@esbuild-kit/core-utils@3.3.2':
@@ -1990,16 +2008,6 @@ snapshots:
       semver: 7.5.3
       tslib: 2.7.0
 
-  '@openfeature/flagd-core@0.2.5(@openfeature/core@1.4.0)':
-    dependencies:
-      '@openfeature/core': 1.4.0
-      ajv: 8.17.1
-      imurmurhash: 0.1.4
-      json-logic-engine: 1.3.6
-      object-hash: 3.0.0
-      semver: 7.5.3
-      tslib: 2.7.0
-
   '@openfeature/flagd-provider@0.13.1(@grpc/grpc-js@1.11.3)(@openfeature/core@1.4.0)(@openfeature/server-sdk@1.15.1(@openfeature/core@1.4.0))':
     dependencies:
       '@grpc/grpc-js': 1.11.3
@@ -2010,6 +2018,13 @@ snapshots:
       util: 0.12.5
     transitivePeerDependencies:
       - '@openfeature/core'
+
+  '@openfeature/flagd-web-provider@0.7.2(@openfeature/web-sdk@1.2.4(@openfeature/core@1.4.0))':
+    dependencies:
+      '@bufbuild/protobuf': 1.10.0
+      '@connectrpc/connect': 1.4.0(@bufbuild/protobuf@1.10.0)
+      '@connectrpc/connect-web': 1.4.0(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0))
+      '@openfeature/web-sdk': 1.2.4(@openfeature/core@1.4.0)
 
   '@openfeature/react-sdk@0.4.6(@openfeature/web-sdk@1.2.4(@openfeature/core@1.4.0))(react@18.3.1)':
     dependencies:
@@ -2096,6 +2111,10 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/node@20.16.9':
+    dependencies:
+      undici-types: 6.19.8
+
+  '@types/node@22.7.3':
     dependencies:
       undici-types: 6.19.8
 
@@ -2527,8 +2546,6 @@ snapshots:
 
   json-logic-engine@1.3.4: {}
 
-  json-logic-engine@1.3.6: {}
-
   json-schema-traverse@1.0.0: {}
 
   lilconfig@2.1.0: {}
@@ -2759,7 +2776,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.16.9
+      '@types/node': 22.7.3
       long: 5.2.3
 
   pump@3.0.2:
